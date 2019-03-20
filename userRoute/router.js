@@ -3,6 +3,16 @@ const express = require("express");
 const router = express.Router();
 const db = require("./userDb.js");
 
+function capitalName(req, res, next) {
+  const { name } = req.body;
+  if (name === name.toUpperCase()) {
+    next();
+  } else {
+    name.toUpperCase();
+    next();
+  }
+}
+
 router.get("/", async (req, res) => {
   try {
     const users = await db.get();
@@ -32,11 +42,10 @@ router.get("/:id/posts", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", capitalName, async (req, res) => {
   const user = req.body;
   try {
-    const incUser = await db.insert(user);
-    const newUser = await db.getById(incUser.id);
+    const newUser = await db.insert(user);
     res.status(200).json(newUser);
   } catch (error) {
     res.status(500).json({ message: "Error" });
@@ -54,7 +63,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", capitalName, async (req, res) => {
   const user = req.body;
   const { id } = req.params;
   try {
