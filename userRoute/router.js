@@ -8,8 +8,7 @@ function capitalName(req, res, next) {
   if (name === name.toUpperCase()) {
     next();
   } else {
-    name.toUpperCase();
-    next();
+    res.status(500).json({ message: "Write the name in upper case." });
   }
 }
 
