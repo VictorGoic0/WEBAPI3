@@ -44,6 +44,16 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {});
+router.put("/:id", async (req, res) => {
+  const post = req.body;
+  const { id } = req.params;
+  try {
+    const edited = await db.update(id, post);
+    const newPost = await db.getById(id);
+    res.status(202).json(newPost);
+  } catch (error) {
+    res.status(500).json({ message: "Error" });
+  }
+});
 
 module.exports = router;
