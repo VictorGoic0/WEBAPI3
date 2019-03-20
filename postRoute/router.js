@@ -25,8 +25,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const post = req.body;
   try {
-    const incPost = await db.insert(post);
-    const newPost = await db.getById(incPost.id);
+    const newPost = await db.insert(post);
     res.status(200).json(newPost);
   } catch (error) {
     res.status(500).json({ message: "Error" });

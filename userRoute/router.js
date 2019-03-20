@@ -1,6 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
+const db = require("./userDb.js");
 
 router.get("/", async (req, res) => {
   try {
@@ -18,6 +19,16 @@ router.get("/:id", async (req, res) => {
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ message: "error" });
+  }
+});
+
+router.get("/:id/posts", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const posts = await db.getUserPosts(id);
+    res.status(202).json(posts);
+  } catch (error) {
+    res.status(500).json({ message: "Error" });
   }
 });
 
