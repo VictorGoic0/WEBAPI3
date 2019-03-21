@@ -76,10 +76,24 @@ router.put("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const edited = await db.update(id, post);
-    const newPost = await db.getById(id);
-    res.status(202).json(newPost);
+    if (edited) {
+      const newPost = await db.getById(id);
+      if (newPost) {
+        res.status(202).json(newPost);
+      } else {
+        res.status(404).json({
+          message: "The post with the specified ID does not exist."
+        });
+      }
+    } else {
+      res
+      .status(500)
+      .json({ message: "The post information could not be modified." });
+    }
   } catch (error) {
-    res.status(500).json({ message: "Error" });
+    res
+    .status(500)
+    .json({ message: "Something went wrong when you made your request." });
   }
 });
 
