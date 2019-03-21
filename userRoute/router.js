@@ -42,9 +42,13 @@ router.get("/:id/posts", async (req, res) => {
   const { id } = req.params;
   try {
     const posts = await db.getUserPosts(id);
-    res.status(200).json(posts);
+    if (posts) {
+      res.status(200).json(posts);
+    } else {
+      res.status(500).json({ message: "The user's posts could not be retrieved." });
+    }
   } catch (error) {
-    res.status(500).json({ message: "The user's posts could not be retrieved." });
+    res.status(404).json({ message: "The user with the specified ID does not exist." });
   }
 });
 
