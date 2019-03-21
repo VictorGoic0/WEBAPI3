@@ -8,7 +8,9 @@ router.get("/", async (req, res) => {
     const posts = await db.get();
     res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ message: "Error" });
+    res
+      .status(500)
+      .json({ message: "The posts information could not be retrieved." });
   }
 });
 
@@ -16,9 +18,17 @@ router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const post = await db.getById(id);
-    res.status(201).json(post);
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist." });
+    }
   } catch (error) {
-    res.status(500).json({ message: "error" });
+    res
+      .status(500)
+      .json({ message: "The post information could not be retrieved." });
   }
 });
 
@@ -28,7 +38,9 @@ router.post("/", async (req, res) => {
     const newPost = await db.insert(post);
     res.status(200).json(newPost);
   } catch (error) {
-    res.status(500).json({ message: "Error" });
+    res.status(500).json({
+      message: "There was an error while saving the post to the database"
+    });
   }
 });
 
