@@ -36,11 +36,15 @@ router.post("/", async (req, res) => {
   const post = req.body;
   try {
     const newPost = await db.insert(post);
-    res.status(200).json(newPost);
+    if (newPost) {
+      res.status(200).json(newPost);
+    } else {
+      res.status(500).json({
+        message: "There was an error while saving the post to the database"
+      });
+    }
   } catch (error) {
-    res.status(500).json({
-      message: "There was an error while saving the post to the database"
-    });
+   res.status(500).json({ message: "Something went wrong when you made your request"})
   }
 });
 
@@ -48,10 +52,22 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const post = await db.getById(id);
-    const deleted = await db.remove(id);
-    res.status(200).json(post);
+    if (post) {
+      const deleted = await db.remove(id);
+      if (deleted) {
+        res.status(201).json(post);
+      } else {
+        res.status(500).json({ error: "The post could not be removed" });
+      }
+    } else {
+      res
+    .status(404)
+    .json({ message: "The post with the specified ID does not exist." });
+    }
   } catch (error) {
-    res.status(500).json({ message: "Error" });
+    res
+    .status(500)
+    .json({ message: "Something went wrong when you made your request." });
   }
 });
 
