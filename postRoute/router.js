@@ -88,13 +88,13 @@ router.put("/:id", async (req, res) => {
         if (edited) {
           res.status(200).json(newPost);
         } else {
-          res.status(404).json({
+          res.status(500).json({
             message: "The post information could not be modified."
           });
         }
       } else {
         res
-        .status(500)
+        .status(404)
         .json({ message: "The post with the specified ID does not exist." });
       }
     } catch (error) {
