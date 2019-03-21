@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
   try {
     const newPost = await db.insert(post);
     if (newPost) {
-      res.status(200).json(newPost);
+      res.status(201).json(newPost);
     } else {
       res.status(500).json({
         message: "There was an error while saving the post to the database"
@@ -74,27 +74,36 @@ router.delete("/:id", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const post = req.body;
   const { id } = req.params;
-  try {
-    const edited = await db.update(id, post);
-    if (edited) {
+
+  if (!post.text || !post.user_id) {
+    res
+      .status(400)
+      .json({ message: "Please provide text and user_id for this post." });
+  }
+  else {
+    try {
       const newPost = await db.getById(id);
       if (newPost) {
-        res.status(202).json(newPost);
+        const edited = await db.update(id, post);
+        if (edited) {
+          res.status(200).json(newPost);
+        } else {
+          res.status(404).json({
+            message: "The post information could not be modified."
+          });
+        }
       } else {
-        res.status(404).json({
-          message: "The post with the specified ID does not exist."
-        });
+        res
+        .status(500)
+        .json({ message: "The post with the specified ID does not exist." });
       }
-    } else {
+    } catch (error) {
       res
       .status(500)
-      .json({ message: "The post information could not be modified." });
+      .json({ message: "Something went wrong when you made your request." });
     }
-  } catch (error) {
-    res
-    .status(500)
-    .json({ message: "Something went wrong when you made your request." });
   }
+  
 });
 
 module.exports = router;
