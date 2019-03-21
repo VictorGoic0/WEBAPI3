@@ -4,11 +4,12 @@ const router = express.Router();
 const db = require("./userDb.js");
 
 function capitalName(req, res, next) {
-  const { name } = req.body;
+  let name = req.body.name;
   if (name === name.toUpperCase()) {
     next();
   } else {
-    res.status(500).json({ message: "Write the name in upper case." });
+    req.body.name = req.body.name.toUpperCase();
+    next();
   }
 }
 
