@@ -42,9 +42,9 @@ router.get("/:id/posts", async (req, res) => {
   const { id } = req.params;
   try {
     const posts = await db.getUserPosts(id);
-    res.status(202).json(posts);
+    res.status(200).json(posts);
   } catch (error) {
-    res.status(500).json({ message: "Error" });
+    res.status(500).json({ message: "The user's posts could not be retrieved." });
   }
 });
 

@@ -34,17 +34,23 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const post = req.body;
-  try {
-    const newPost = await db.insert(post);
-    if (newPost) {
-      res.status(201).json(newPost);
-    } else {
-      res.status(500).json({
-        message: "There was an error while saving the post to the database"
-      });
+  if (!post.text || !post.user_id) {
+    res
+      .status(400)
+      .json({ message: "Please provide text and user_id for this post." });
+  } else {
+    try {
+      const newPost = await db.insert(post);
+      if (newPost) {
+        res.status(201).json(newPost);
+      } else {
+        res.status(500).json({
+          message: "There was an error while saving the post to the database"
+        });
+      }
+    } catch (error) {
+     res.status(500).json({ message: "Something went wrong when you made your request"})
     }
-  } catch (error) {
-   res.status(500).json({ message: "Something went wrong when you made your request"})
   }
 });
 
